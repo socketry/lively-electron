@@ -8,5 +8,9 @@ if development_mode
 	ENV["CONSOLE_LEVEL"] = "debug"
 end
 
+electron_path = ENV.fetch("ELECTRON") do
+	`npx which electron`.strip
+end
+
 main_js = File.join(__dir__, "..", "src", "main.js")
-Process.exec("npx", "electron", main_js, *ARGV)
+Process.exec(electron_path, main_js, *ARGV)
