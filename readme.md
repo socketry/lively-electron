@@ -6,9 +6,17 @@ Electron wrapper for running [Lively](https://github.com/socketry/lively) Ruby a
 
 ## Usage
 
+Please see the [project documentation](https://github.com/socketry/lively-electron/) for more details.
+
+  - [Getting Started](https://github.com/socketry/lively-electron/guides/getting-started/index) - This guide explains how to get started with `lively-electron` to create desktop applications from Lively Ruby applications.
+
 ## Releases
 
-There are no documented releases.
+Please see the [project releases](https://github.com/socketry/lively-electron/releases/index) for all releases.
+
+### v0.1.0
+
+  - Initial implementation.
 
 ## Contributing
 

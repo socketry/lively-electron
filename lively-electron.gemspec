@@ -21,9 +21,9 @@ Gem::Specification.new do |spec|
 		"source_code_uri" => "https://github.com/socketry/lively-electron.git",
 	}
 	
-	spec.files = Dir.glob(["{bin,examples,guides,lib,src,test,config}/**/*", "*.md", "*.yaml"], File::FNM_DOTMATCH, base: __dir__)
+	spec.files = Dir.glob(["{context,lib,src}/**/*", "*.md", "*.yaml"], File::FNM_DOTMATCH, base: __dir__)
 	
-	spec.executables = ["lively-electron-server"]
+	spec.executables = ["lively-electron-server", "lively-electron"]
 	
 	spec.required_ruby_version = ">= 3.2"
 	
