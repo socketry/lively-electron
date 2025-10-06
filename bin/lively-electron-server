@@ -11,7 +11,7 @@ end
 configuration = Async::Service::Configuration.build do
 	service "lively-electron" do
 		include Lively::Electron::Environment::Application
-	end	
+	end
 end
 
 Async::Service::Controller.run(configuration)
