@@ -53,7 +53,7 @@ class LivelyElectronApp {
         const livelyElectronScript = path.join(__dirname, '..', 'bin', 'lively-electron-server');
         const childArgs = args.slice();
 
-        const child = spawn('bundle', ['exec', livelyElectronScript, ...childArgs], {
+        const child = spawn(livelyElectronScript, childArgs, {
           stdio: [
             'inherit',  // stdin
             'inherit',  // stdout
