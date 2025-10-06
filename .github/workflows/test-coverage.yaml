@@ -1,0 +1,85 @@
+name: Test Coverage
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+env:
+  COVERAGE: PartialSummary
+
+jobs:
+  test:
+    name: ${{matrix.ruby}} on ${{matrix.os}}
+    runs-on: ${{matrix.os}}-latest
+    
+    strategy:
+      matrix:
+        os:
+          - ubuntu
+          - macos
+        
+        ruby:
+          - ruby
+    
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{matrix.ruby}}
+        bundler-cache: true
+    - uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+        cache: 'npm'
+    
+    - name: Install npm dependencies
+      run: npm ci
+    
+    # Install system dependencies for GUI testing
+    - name: Install system dependencies (Ubuntu)
+      if: matrix.os == 'ubuntu'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xvfb
+    
+    # Start virtual display for Linux GUI tests
+    - name: Start virtual display (Ubuntu)
+      if: matrix.os == 'ubuntu'
+      run: |
+        export DISPLAY=:99
+        Xvfb :99 -screen 0 1024x768x24 &
+        sleep 3
+    
+    - name: Run tests
+      timeout-minutes: 5
+      run: bundle exec bake test
+      env:
+        # Disable sandbox for CI environment:
+        ELECTRON_DISABLE_SANDBOX: 1
+        # Use virtual display on Linux (Xvfb provides full GUI functionality):
+        DISPLAY: ":99"
+    
+    - uses: actions/upload-artifact@v4
+      with:
+        include-hidden-files: true
+        if-no-files-found: error
+        name: coverage-${{matrix.os}}-${{matrix.ruby}}
+        path: .covered.db
+  
+  validate:
+    needs: test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ruby
+        bundler-cache: true
+    
+    - uses: actions/download-artifact@v4
+    
+    - name: Validate coverage
+      timeout-minutes: 5
+      run: bundle exec bake covered:validate --paths */.covered.db \;

@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+development_mode = ARGV.delete("--development")
+
+if development_mode
+	ENV["LIVELY_VARIANT"] = "development"
+	ENV["CONSOLE_LEVEL"] = "debug"
+end
+
+main_js = File.join(__dir__, "..", "src", "main.js")
+Process.exec("npx", "electron", main_js, *ARGV)

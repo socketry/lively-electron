@@ -1,0 +1,71 @@
+name: Test
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{matrix.ruby}} with Node ${{matrix.node}} on ${{matrix.os}}
+    runs-on: ${{matrix.os}}-latest
+    continue-on-error: ${{matrix.experimental}}
+    
+    strategy:
+      matrix:
+        os:
+          - ubuntu
+          - macos
+        
+        ruby:
+          - "3.2"
+          - "3.3"
+          - "3.4"
+        
+        node:
+          - "18"
+          - "20"
+        
+        experimental: [false]
+        
+        include:
+          - os: ubuntu-latest
+            ruby: "head"
+            node: "20"
+            experimental: true
+    
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{matrix.ruby}}
+        bundler-cache: true
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{matrix.node}}
+        cache: 'npm'
+    
+    - name: Install npm dependencies
+      run: npm ci
+    
+    - name: Install system dependencies (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xvfb
+    
+    - name: Start virtual display (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        export DISPLAY=:99
+        Xvfb :99 -screen 0 1024x768x24 &
+        sleep 3
+    
+    # Run Ruby tests
+    - name: Run Ruby tests
+      run: bundle exec bake test
+      env:
+        # Disable sandbox for CI environment:
+        ELECTRON_DISABLE_SANDBOX: 1
+        # Use virtual display on Linux (Xvfb provides full GUI functionality):
+        DISPLAY: ":99"
