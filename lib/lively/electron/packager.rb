@@ -57,27 +57,27 @@ module Lively
 					end
 				end
 				
-			# Calls {Generic#electron_executable_path} for each of `search_roots` in order (e.g. the app's working directory, then the gem root in development). The first concrete path wins. If no root yields a local binary, falls back to the bare program name `"electron"` for the OS to find on `PATH`.
-			# @parameter packager [Lively::Electron::Packager::Generic] A concrete {Npm} or {Pnpm} instance.
-			# @parameter search_roots [Array(String)] Candidate directories; first match wins.
-			# @parameter environment [Hash] The process environment. Defaults to `::ENV`.
-			# @returns [String] An absolute path, or `"electron"` to resolve via `PATH`.
-			def resolve_electron_executable(packager, search_roots, environment = ::ENV)
-				search_roots
-					.compact
-					.map { |path| File.expand_path(path) }
-					.uniq
-					.each do |search_root|
-						begin
-							return packager.electron_executable_path(search_root, environment)
-						rescue NotFoundError
-							next
+				# Calls {Generic#electron_executable_path} for each of `search_roots` in order (e.g. the app's working directory, then the gem root in development). The first concrete path wins. If no root yields a local binary, falls back to the bare program name `"electron"` for the OS to find on `PATH`.
+				# @parameter packager [Lively::Electron::Packager::Generic] A concrete {Npm} or {Pnpm} instance.
+				# @parameter search_roots [Array(String)] Candidate directories; first match wins.
+				# @parameter environment [Hash] The process environment. Defaults to `::ENV`.
+				# @returns [String] An absolute path, or `"electron"` to resolve via `PATH`.
+				def resolve_electron_executable(packager, search_roots, environment = ::ENV)
+					search_roots
+						.compact
+						.map {|path| File.expand_path(path)}
+						.uniq
+						.each do |search_root|
+							begin
+								return packager.electron_executable_path(search_root, environment)
+							rescue NotFoundError
+								next
+							end
 						end
-					end
-				
-				# No local binary found in any root; rely on the OS to find `electron` on PATH:
-				"electron"
-			end
+					
+					# No local binary found in any root; rely on the OS to find `electron` on PATH:
+					"electron"
+				end
 				
 				private
 				

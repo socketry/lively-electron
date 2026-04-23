@@ -8,7 +8,7 @@ require "json"
 require "tmpdir"
 
 describe Lively::Electron::Packager do
-	let(:env) { {}.dup }
+	let(:env) {{}.dup}
 	
 	def write_json(root, data)
 		File.write(File.join(root, "package.json"), JSON.pretty_generate(data))
