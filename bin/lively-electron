@@ -8,9 +8,18 @@ if development_mode
 	ENV["CONSOLE_LEVEL"] = "debug"
 end
 
-electron_path = ENV.fetch("ELECTRON") do
-	`npx which electron`.strip
-end
+require_relative "../lib/lively/electron/packager"
+
+# Look for node_modules in the app’s working directory first; the published gem does not
+# ship node_modules, so that is where users install electron. Fall back to the gem’s own
+# directory for development/CI (e.g. pnpm in the repo root while cwd is examples/*).
+project_root = File.expand_path(Dir.pwd)
+gem_root = File.expand_path("..", __dir__)
+packager = Lively::Electron::Packager.detect(project_root, ENV)
+
+electron_path = Lively::Electron::Packager.resolve_electron_executable(
+	packager, [project_root, gem_root], ENV
+)
 
 main_js = File.join(__dir__, "..", "src", "main.js")
 Process.exec(electron_path, main_js, *ARGV)

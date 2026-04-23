@@ -4,5 +4,7 @@
 # Copyright, 2025, by Samuel Williams.
 
 require "lively"
+
 require_relative "electron/version"
 require_relative "electron/environment"
+require_relative "electron/packager"

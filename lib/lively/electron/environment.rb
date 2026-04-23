@@ -13,23 +13,27 @@ module Lively
 	module Electron
 		# @namespace
 		module Environment
-			# Represents the environment configuration for a Lively Electron application server.
-			# 
-			# This module provides server configuration for Electron apps, using TCP
-			# localhost binding for direct connection from Electron/Chromium.
+			# The Lively environment for a desktop Electron shell that connects to this process over a local HTTP server.
+			# The server uses TCP and may inherit a bound socket passed via `LIVELY_SERVER_DESCRIPTOR`.
 			module Application
 				include Lively::Environment::Application
 				
+				# The base URL the Electron shell uses to reach the Lively server.
+				# Reads `LIVELY_URL` from the environment, or defaults to `http://localhost:0/`.
+				# @returns [String]
 				def url
-					"http://localhost:0/"
+					ENV.fetch("LIVELY_URL", "http://localhost:0/")
 				end
 				
+				# The HTTP endpoint the server listens on.
+				# When `LIVELY_SERVER_DESCRIPTOR` is set, reuses the inherited bound socket instead of binding a new one.
+				# @returns [Async::HTTP::Endpoint]
 				def endpoint
 					if descriptor = ENV["LIVELY_SERVER_DESCRIPTOR"]
 						Console.info(self, "Using inherited file descriptor.", descriptor: descriptor)
 						bound_socket = Socket.for_fd(descriptor.to_i)
 						
-						# Ensure that the socket is non-blocking:
+						# Ensure the inherited socket is non-blocking:
 						bound_socket.nonblock = true
 						
 						endpoint = IO::Endpoint::BoundEndpoint.new(nil, [bound_socket])

@@ -10,10 +10,10 @@ Add the gem to your project:
 $ bundle add lively-electron
 ~~~
 
-Also install the npm package for the Electron wrapper:
+Also install the Node dependencies for the Electron binary (and create `package.json` if it is missing) using the task from the gem:
 
 ~~~ bash
-$ npm install lively-electron
+$ bundle exec bake lively:electron:install
 ~~~
 
 ## Core Concepts

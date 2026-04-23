@@ -7,6 +7,7 @@
 module Lively
 	# @namespace
 	module Electron
+		# @attribute [String] The published SemVer of this gem.
 		VERSION = "0.1.2"
 	end
 end
