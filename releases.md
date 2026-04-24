@@ -1,6 +1,6 @@
 # Releases
 
-## Unreleased
+## v0.2.0
 
   - Add support for `pnpm` as well as `npm`.
   - Add `bake lively:electron:install` that installs electron locally.

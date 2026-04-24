@@ -14,6 +14,11 @@ Please see the [project documentation](https://github.com/socketry/lively-electr
 
 Please see the [project releases](https://github.com/socketry/lively-electron/releases/index) for all releases.
 
+### v0.2.0
+
+  - Add support for `pnpm` as well as `npm`.
+  - Add `bake lively:electron:install` that installs electron locally.
+
 ### v0.1.0
 
   - Initial implementation.
